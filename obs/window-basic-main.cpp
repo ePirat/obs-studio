@@ -1184,6 +1184,7 @@ void OBSBasic::OBSInit()
 	}
 
 	ui->mainSplitter->setSizes(defSizes);
+	RestoreProjectors();
 }
 
 void OBSBasic::InitHotkeys()
@@ -4314,6 +4315,8 @@ void OBSBasic::OpenProjector(obs_source_t *source, int monitor)
 void OBSBasic::OpenPreviewProjector()
 {
 	int monitor = sender()->property("monitor").toInt();
+	config_set_int(App()->GlobalConfig(), "BasicWindow",
+			"LastPreviewProjector", monitor);
 	OpenProjector(nullptr, monitor);
 }
 
@@ -4335,6 +4338,19 @@ void OBSBasic::OpenSceneProjector()
 		return;
 
 	OpenProjector(obs_scene_get_source(scene), monitor);
+}
+
+void OBSBasic::RestoreProjectors()
+{
+	std::vector<MonitorInfo> monitors;
+	GetMonitors(monitors);
+	config_set_default_int(App()->GlobalConfig(), "BasicWindow", "LastPreviewProjector", -99);
+	int monitor = config_get_int(App()->GlobalConfig(), "BasicWindow", "LastPreviewProjector");
+	if (monitor == -99)
+		return;
+	blog(LOG_INFO, "Restore projector to monitor: %i", monitor);
+	if ((unsigned long)monitor < monitors.size())
+		OpenProjector(nullptr, monitor);
 }
 
 void OBSBasic::UpdateTitleBar()

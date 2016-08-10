@@ -196,6 +196,7 @@ private:
 
 	void Nudge(int dist, MoveDir dir);
 	void OpenProjector(obs_source_t *source, int monitor);
+	void RestoreProjectors();
 
 	void GetAudioSourceFilters();
 	void GetAudioSourceProperties();

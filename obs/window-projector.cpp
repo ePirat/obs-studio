@@ -125,5 +125,9 @@ void OBSProjector::mousePressEvent(QMouseEvent *event)
 
 void OBSProjector::EscapeTriggered()
 {
+	if (!source) {
+		config_remove_value(App()->GlobalConfig(), "BasicWindow",
+			"LastPreviewProjector");
+	}
 	deleteLater();
 }
